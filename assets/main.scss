@@ -1,69 +1,73 @@
----
----
-
 @import "minima";
 
 /* Custom styles for physics documentation */
 
 /* Improve readability */
 .post-content {
-  font-size: 1.1em;
-  line-height: 1.6;
+    font-size: 1.1em;
+    line-height: 1.6;
 }
 
 /* Style for mathematical formulas */
 .MathJax_Display {
-  margin: 1em 0;
+    margin: 1em 0;
 }
 
 /* Better styling for sections */
-h1, h2, h3, h4, h5, h6 {
-  margin-top: 2em;
-  margin-bottom: 1em;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-top: 2em;
+    margin-bottom: 1em;
 }
 
 /* Style for definition lists */
 dt {
-  font-weight: bold;
-  margin-top: 1em;
+    font-weight: bold;
+    margin-top: 1em;
 }
 
 dd {
-  margin-left: 2em;
-  margin-bottom: 1em;
+    margin-left: 2em;
+    margin-bottom: 1em;
 }
 
 /* Improve code blocks */
-pre, code {
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+pre,
+code {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
 /* Better table styling */
 table {
-  margin: 1em 0;
-  border-collapse: collapse;
-  width: 100%;
+    margin: 1em 0;
+    border-collapse: collapse;
+    width: 100%;
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px 12px;
-  text-align: left;
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    text-align: left;
 }
 
 th {
-  background-color: #f5f5f5;
-  font-weight: bold;
+    background-color: #f5f5f5;
+    font-weight: bold;
 }
 
 /* Navigation improvements */
 .site-nav .page-link {
-  margin-left: 20px;
+    margin-left: 20px;
 }
 
 /* Responsive design */
 @media screen and (max-width: 600px) {
-  .post-content {
-    font-size: 1em;
-  }
+    .post-content {
+        font-size: 1em;
+    }
 }
