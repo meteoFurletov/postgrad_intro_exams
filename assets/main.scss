@@ -2,32 +2,114 @@
 
 /* Custom styles for physics documentation */
 
-/* Improve readability */
+/* Improve readability and content structure */
 .post-content {
     font-size: 1.1em;
     line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Main title styling */
+h1 {
+    color: #2c3e50;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 0.5em;
+    margin-bottom: 1.5em;
+}
+
+/* Better styling for sections */
+h2 {
+    color: #34495e;
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    padding-left: 0.5em;
+    border-left: 4px solid #3498db;
+}
+
+h3 {
+    color: #2c3e50;
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+
+h4,
+h5,
+h6 {
+    margin-top: 1.5em;
+    margin-bottom: 1em;
+}
+
+/* Style for blockquotes (subtitles) */
+blockquote {
+    background-color: #f8f9fa;
+    border-left: 4px solid #3498db;
+    padding: 0.5em 1em;
+    margin: 1em 0;
+    font-style: italic;
+    color: #666;
 }
 
 /* Style for mathematical formulas */
 .MathJax_Display {
-    margin: 1em 0;
+    margin: 1.5em 0;
+    padding: 1em;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #3498db;
+    overflow-x: auto;
 }
 
-/* Better styling for sections */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    margin-top: 2em;
-    margin-bottom: 1em;
+/* Inline math styling */
+.MathJax {
+    color: #2c3e50;
+}
+
+/* Better support for chemical formulas */
+sub,
+sup {
+    font-size: 0.8em;
+    line-height: 0;
+}
+
+/* Blockquote styling for subtitles */
+blockquote {
+    background-color: #f8f9fa;
+    border-left: 4px solid #3498db;
+    padding: 0.8em 1.2em;
+    margin: 1.5em 0;
+    font-style: italic;
+    color: #666;
+    border-radius: 4px;
+}
+
+blockquote p {
+    margin: 0;
+    font-size: 1.1em;
+}
+
+/* Better list styling */
+ul,
+ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}
+
+li {
+    margin: 0.5em 0;
+}
+
+/* Bold text in lists (like definitions) */
+li strong,
+li b {
+    color: #2c3e50;
 }
 
 /* Style for definition lists */
 dt {
     font-weight: bold;
     margin-top: 1em;
+    color: #2c3e50;
 }
 
 dd {
@@ -39,25 +121,38 @@ dd {
 pre,
 code {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    background-color: #f8f9fa;
+}
+
+code {
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    color: #e74c3c;
 }
 
 /* Better table styling */
 table {
-    margin: 1em 0;
+    margin: 1.5em 0;
     border-collapse: collapse;
     width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 th,
 td {
     border: 1px solid #ddd;
-    padding: 8px 12px;
+    padding: 12px 16px;
     text-align: left;
 }
 
 th {
-    background-color: #f5f5f5;
+    background-color: #3498db;
+    color: white;
     font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
 }
 
 /* Navigation improvements */
@@ -65,9 +160,187 @@ th {
     margin-left: 20px;
 }
 
+/* Academic content improvements */
+.post-content p {
+    text-align: justify;
+    margin-bottom: 1em;
+}
+
+/* Style for formulas in lists */
+li .MathJax_Display {
+    margin: 0.5em 0;
+    padding: 0.5em;
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+}
+
+/* Physics navigation styling */
+.physics-nav {
+    background-color: #f8f9fa;
+    padding: 1em;
+    margin: 1em 0;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.physics-nav h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.physics-nav ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.physics-nav li {
+    margin: 0.5em 0;
+}
+
+.physics-nav a {
+    color: #3498db;
+    text-decoration: none;
+    padding: 0.2em 0;
+    display: block;
+}
+
+.physics-nav a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+/* Topic navigation (prev/next) */
+.topic-navigation {
+    margin-top: 3em;
+    padding-top: 2em;
+    border-top: 2px solid #e9ecef;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.prev-link,
+.next-link {
+    padding: 0.5em 1em;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.prev-link:hover,
+.next-link:hover {
+    background-color: #2980b9;
+    color: white;
+}
+
+.next-link {
+    margin-left: auto;
+}
+
+/* Article styling */
+.physics-topic {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.post-header {
+    margin-bottom: 2em;
+    text-align: center;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 1em;
+}
+
+.post-meta {
+    color: #666;
+    font-style: italic;
+    margin-top: 0.5em;
+    font-size: 1.1em;
+}
+
+/* Academic content improvements */
+.post-content p {
+    text-align: justify;
+    margin-bottom: 1em;
+    line-height: 1.7;
+}
+
+/* Style for formulas in lists */
+li .MathJax_Display {
+    margin: 0.5em 0;
+    padding: 0.5em;
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+}
+
+/* Better emphasis in academic text */
+strong,
+b {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Scientific notation and variables */
+em,
+i {
+    color: #34495e;
+}
+
+/* Print styles for academic use */
+@media print {
+
+    .physics-nav,
+    .topic-navigation,
+    .site-header,
+    .site-footer {
+        display: none;
+    }
+
+    .post-content {
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+
+    h1,
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+
+    .MathJax_Display {
+        background: none;
+        border: none;
+        padding: 0.5em 0;
+    }
+}
+
 /* Responsive design */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
     .post-content {
         font-size: 1em;
+        max-width: 100%;
+        padding: 0 1em;
+    }
+
+    h2 {
+        font-size: 1.4em;
+    }
+
+    .MathJax_Display {
+        padding: 0.5em;
+        font-size: 0.9em;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 1em;
+    }
+
+    .next-link {
+        margin-left: 0;
     }
 }

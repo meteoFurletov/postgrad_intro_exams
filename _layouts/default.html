@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html lang="{{ page.lang | default: site.lang | default: " ru" }}">
+<html lang="{{ page.lang | default: site.lang | default: 'ru' }}">
 
 {%- include head.html -%}
 
 <body>
 
-    {%- include header.html -%}
+  {%- include header.html -%}
 
-    <main class="page-content" aria-label="Content">
-        <div class="wrapper">
-            {{ content }}
-        </div>
-    </main>
+  <main class="page-content" aria-label="Content">
+    <div class="wrapper">
+      <div class="post-content">
+        {{ content }}
+      </div>
+    </div>
+  </main>
 
-    {%- include footer.html -%}
+  {%- include footer.html -%}
 
-    <!-- MathJax -->
-    <script type="text/javascript" async
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-    <script type="text/x-mathjax-config">
+  <!-- MathJax -->
+  <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+  <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         tex2jax: {
           inlineMath: [['$', '$'], ['\\(', '\\)']],

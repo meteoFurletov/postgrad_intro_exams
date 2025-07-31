@@ -1,6 +1,8 @@
 # Site settings
-title: "Физика атмосферы - Постдипломное образование"
-description: "Документация по курсу физики атмосферы для постдипломного образования"
+title: "Физика атмосферы - Подготовка к экзаменам"
+description: "Документация по курсу физики атмосферы для подготовки к экзаменам"
+author: "Никита Фурлетов"
+email: "meteofurletov@gmail.com"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site
 
@@ -14,6 +16,8 @@ kramdown:
   input: GFM
   math_engine: mathjax
   syntax_highlighter: rouge
+  auto_ids: true
+  toc_levels: 1..6
 
 # MathJax settings
 mathjax: true
@@ -24,9 +28,40 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 
+# Site language
+lang: ru
+
 # Navigation
 header_pages:
   - README.md
+
+# Collections for better organization
+collections:
+  physics:
+    output: true
+    permalink: /:collection/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "default"
+      math: true
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      math: true
+  - scope:
+      path: "Блок 1. «Физика атмосферы»"
+      type: "pages"
+    values:
+      layout: "default"
+      math: true
+      parent: "Блок 1. Физика атмосферы"
 
 # Exclude from processing
 exclude:
