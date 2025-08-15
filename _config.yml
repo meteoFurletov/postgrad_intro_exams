@@ -3,7 +3,7 @@ title: "Физика атмосферы - Подготовка к экзамен
 description: "Документация по курсу физики атмосферы для подготовки к экзаменам"
 author: "Никита Фурлетов"
 email: "meteofurletov@gmail.com"
-baseurl: "postgrad_intro_exams" # the subpath of your site, e.g. /blog
+baseurl: "/postgrad_intro_exams" # the subpath of your site, leading slash required for project pages
 url: "https://meteofurletov.github.io" # the base hostname & protocol for your site
 
 # Build settings
