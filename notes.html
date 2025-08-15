@@ -5,6 +5,12 @@ title: "Заметки"
 
 <h1>Просмотр заметок</h1>
 
+<!-- Mobile toggle button -->
+<button class="mobile-toggle" onclick="toggleMobileExplorer()">☰ Заметки</button>
+
+<!-- Mobile overlay -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileExplorer()"></div>
+
 <div class="notes-container">
     {% include notes-explorer.html %}
 
@@ -24,4 +30,37 @@ title: "Заметки"
     }
     window.addEventListener('hashchange', loadNoteFromHash);
     document.addEventListener('DOMContentLoaded', loadNoteFromHash);
+
+    // Mobile explorer toggle functionality
+    function toggleMobileExplorer() {
+        const explorer = document.querySelector('.notes-explorer');
+        const overlay = document.getElementById('mobile-overlay');
+
+        if (explorer.classList.contains('open')) {
+            closeMobileExplorer();
+        } else {
+            explorer.classList.add('open');
+            overlay.classList.add('show');
+        }
+    }
+
+    function closeMobileExplorer() {
+        const explorer = document.querySelector('.notes-explorer');
+        const overlay = document.getElementById('mobile-overlay');
+
+        explorer.classList.remove('open');
+        overlay.classList.remove('show');
+    }
+
+    // Close explorer when a note is selected on mobile
+    document.addEventListener('DOMContentLoaded', function () {
+        const explorer = document.querySelector('.notes-explorer');
+        if (explorer) {
+            explorer.addEventListener('click', function (e) {
+                if (e.target.tagName === 'A' && window.innerWidth <= 900) {
+                    setTimeout(closeMobileExplorer, 100);
+                }
+            });
+        }
+    });
 </script>
