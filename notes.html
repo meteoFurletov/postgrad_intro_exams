@@ -1,0 +1,27 @@
+---
+layout: default
+title: "Заметки"
+---
+
+<h1>Просмотр заметок</h1>
+
+<div class="notes-container">
+    {% include notes-explorer.html %}
+
+    <div id="note-viewer" class="note-viewer">
+        <p>Выберите заметку в панели слева.</p>
+    </div>
+</div>
+
+<!-- Markdown renderer -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    function loadNoteFromHash() {
+        const hash = decodeURIComponent(location.hash || '');
+        const path = hash.startsWith('#') ? hash.slice(1) : hash;
+        if (!path) return;
+        if (window.loadNote) window.loadNote(path);
+    }
+    window.addEventListener('hashchange', loadNoteFromHash);
+    document.addEventListener('DOMContentLoaded', loadNoteFromHash);
+</script>

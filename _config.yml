@@ -3,8 +3,8 @@ title: "Физика атмосферы - Подготовка к экзамен
 description: "Документация по курсу физики атмосферы для подготовки к экзаменам"
 author: "Никита Фурлетов"
 email: "meteofurletov@gmail.com"
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site
+baseurl: "postgrad" # the subpath of your site, e.g. /blog
+url: "https://meteofurletov.github.io" # the base hostname & protocol for your site
 
 # Build settings
 markdown: kramdown
@@ -25,7 +25,6 @@ mathjax: true
 # Jekyll settings
 plugins:
   - jekyll-feed
-  - jekyll-sitemap
   - jekyll-seo-tag
 
 # Site language
@@ -76,3 +75,17 @@ exclude:
 # Include
 include:
   - _pages
+
+# Sitemap configuration (guard against colon-heavy filenames in static dirs)
+sitemap:
+  exclude:
+    - wide/
+    - compact/
+
+# Disable README-as-index plugin that GitHub Pages loads implicitly
+readme_index:
+  enabled: false
+
+# Disable optional front matter to avoid treating raw notes as Pages
+optional_front_matter:
+  enabled: false
