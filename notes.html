@@ -36,11 +36,16 @@ title: "Заметки"
         const explorer = document.querySelector('.notes-explorer');
         const overlay = document.getElementById('mobile-overlay');
 
-        if (explorer.classList.contains('open')) {
-            closeMobileExplorer();
-        } else {
-            explorer.classList.add('open');
-            overlay.classList.add('show');
+        console.log('Toggle called, explorer:', explorer, 'overlay:', overlay);
+
+        if (explorer && overlay) {
+            if (explorer.classList.contains('open')) {
+                closeMobileExplorer();
+            } else {
+                explorer.classList.add('open');
+                overlay.classList.add('show');
+                console.log('Explorer opened');
+            }
         }
     }
 
@@ -48,8 +53,13 @@ title: "Заметки"
         const explorer = document.querySelector('.notes-explorer');
         const overlay = document.getElementById('mobile-overlay');
 
-        explorer.classList.remove('open');
-        overlay.classList.remove('show');
+        console.log('Close called, explorer:', explorer, 'overlay:', overlay);
+
+        if (explorer && overlay) {
+            explorer.classList.remove('open');
+            overlay.classList.remove('show');
+            console.log('Explorer closed');
+        }
     }
 
     // Close explorer when a note is selected on mobile
@@ -62,5 +72,12 @@ title: "Заметки"
                 }
             });
         }
+
+        // Add escape key handler
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeMobileExplorer();
+            }
+        });
     });
 </script>
