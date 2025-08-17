@@ -5,21 +5,10 @@
     </div>
 
     <div class="notes-explorer-section">
-        <h4>compact</h4>
-        <div id="tree-compact" class="tree"></div>
-        <div id="data-compact" hidden>
-            {% for f in site.static_files %}{% if f.path contains '/compact/' and f.extname == '.md' %}
-            <span data-path="{{ f.path }}"></span>
-            {% endif %}{% endfor %}
-        </div>
-
-    </div>
-
-    <div class="notes-explorer-section">
-        <h4>wide</h4>
-        <div id="tree-wide" class="tree"></div>
-        <div id="data-wide" hidden>
-            {% for f in site.static_files %}{% if f.path contains '/wide/' and f.extname == '.md' %}
+        <h4>Заметки</h4>
+        <div id="tree-notes" class="tree"></div>
+        <div id="data-notes" hidden>
+            {% for f in site.static_files %}{% if f.path contains '/Notes/' and f.extname == '.md' %}
             <span data-path="{{ f.path }}"></span>
             {% endif %}{% endfor %}
         </div>
@@ -31,30 +20,8 @@
         const BASE = '{{ site.baseurl | default: "" }}';
 
         // Enumerate notes from static files
-        const COMPACT_STATIC = Array.from(document.querySelectorAll('#data-compact [data-path]')).map(el => el.getAttribute('data-path'));
-        const WIDE_PATHS = Array.from(document.querySelectorAll('#data-wide [data-path]')).map(el => el.getAttribute('data-path'));
-        const NOTES = {
-            compact: (COMPACT_STATIC || []).sort().map(p => ({ path: p })),
-            wide: (WIDE_PATHS || []).sort().map(p => ({ path: p }))
-        };
-
-        // Build a mapping from topic code (e.g., "1.1") to the compact note path
-        function topicCode(str) {
-            if (!str) return null;
-            // capture first two-level numeric code like 1.1 or 2.5
-            const m = String(str).match(/\b(\d+\.\d+)\b/);
-            return m ? m[1] : null;
-        }
-        function basename(p) {
-            const i = p.lastIndexOf('/')
-            return i >= 0 ? p.slice(i + 1) : p;
-        }
-        const COMPACT_BY_CODE = new Map();
-        for (const p of (COMPACT_STATIC || [])) {
-            const title = basename(p).replace(/\.(md|html)$/i, '');
-            const code = topicCode(title);
-            if (code && !COMPACT_BY_CODE.has(code)) COMPACT_BY_CODE.set(code, normalizePath(p));
-        }
+        const NOTES_PATHS = Array.from(document.querySelectorAll('#data-notes [data-path]')).map(el => el.getAttribute('data-path'));
+        const NOTES = (NOTES_PATHS || []).sort().map(p => ({ path: p }));
 
         // Sidebar toggle
         const toggleBtn = document.querySelector('.notes-toggle');
@@ -80,15 +47,41 @@
             return out;
         }
 
+        // Natural sorting function for proper numerical order
+        function naturalSort(a, b) {
+            const aParts = a.split(/(\d+)/);
+            const bParts = b.split(/(\d+)/);
+
+            for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
+                const aPart = aParts[i] || '';
+                const bPart = bParts[i] || '';
+
+                if (aPart === bPart) continue;
+
+                // Check if both parts are numbers
+                const aNum = parseInt(aPart, 10);
+                const bNum = parseInt(bPart, 10);
+
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return aNum - bNum;
+                }
+
+                // Fall back to string comparison
+                return aPart.localeCompare(bPart);
+            }
+
+            return 0;
+        }
+
         function titleFromPart(part) {
             return part.replace(/\.(md|html)$/i, '');
         }
 
-        function toTree(items, scope) {
+        function toTree(items) {
             const root = { dirs: {}, files: [] };
             for (const it of items) {
-                const path = it.path; // e.g. /wide/Блок .../1.2/Note.md
-                const after = path.split('/' + scope + '/')[1] || '';
+                const path = it.path; // e.g. /Notes/Блок 1/1.1. Theme.md or /Notes/Блок 1/1.1. Theme/subtopic.md
+                const after = path.split('/Notes/')[1] || '';
                 if (!after) continue;
                 const parts = after.split('/');
                 let node = root;
@@ -107,16 +100,35 @@
         }
 
         // Render tree using <details>/<summary>
-        function renderTree(container, tree, opts = {}) {
-            const isWide = !!opts.isWide;
+        function renderTree(container, tree) {
             container.innerHTML = '';
             const ul = document.createElement('ul');
             ul.style.listStyle = 'none';
             ul.style.paddingLeft = '0.5rem';
 
             function renderNode(node, parent, depth = 0) {
-                // Directories first (sorted)
-                const dirNames = Object.keys(node.dirs || {}).sort((a, b) => a.localeCompare(b));
+                // Files first (sorted with natural sorting for proper numerical order)
+                const files = (node.files || []).slice().sort((a, b) => naturalSort(a.title, b.title));
+                for (const f of files) {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.textContent = f.title;
+                    a.href = '#' + encodeURI(normalizePath(f.path));
+                    a.dataset.path = normalizePath(f.path);
+
+                    // Make all files red (theme overview style)
+                    a.classList.add('vscode-file', 'theme-overview', `indent-${Math.min(depth, 4)}`);
+
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        selectAndLoad(a.dataset.path);
+                    });
+                    li.appendChild(a);
+                    parent.appendChild(li);
+                }
+
+                // Directories after files (sorted with natural sorting)
+                const dirNames = Object.keys(node.dirs || {}).sort((a, b) => naturalSort(a, b));
                 for (const name of dirNames) {
                     const details = document.createElement('details');
                     const summary = document.createElement('summary');
@@ -127,43 +139,8 @@
                     details.appendChild(inner);
                     parent.appendChild(details);
 
-                    // If this is a WIDE topic folder and a compact overview exists for its topic code,
-                    // insert an overview link at the top of the folder.
-                    if (isWide) {
-                        const code = topicCode(name);
-                        const compactPath = code ? COMPACT_BY_CODE.get(code) : null;
-                        if (compactPath) {
-                            const li = document.createElement('li');
-                            const a = document.createElement('a');
-                            a.textContent = 'Кратко (обзор)';
-                            a.href = '#' + encodeURI(compactPath);
-                            a.dataset.path = compactPath;
-                            a.classList.add('vscode-file', `indent-${Math.min(depth + 1, 4)}`);
-                            a.addEventListener('click', (e) => {
-                                e.preventDefault();
-                                selectAndLoad(compactPath);
-                            });
-                            li.appendChild(a);
-                            inner.appendChild(li);
-                        }
-                    }
+                    // Render subdirectories and their files
                     renderNode(node.dirs[name], inner, depth + 1);
-                }
-                // Files (sorted)
-                const files = (node.files || []).slice().sort((a, b) => a.title.localeCompare(b.title));
-                for (const f of files) {
-                    const li = document.createElement('li');
-                    const a = document.createElement('a');
-                    a.textContent = f.title;
-                    a.href = '#' + encodeURI(normalizePath(f.path));
-                    a.dataset.path = normalizePath(f.path);
-                    a.classList.add('vscode-file', `indent-${Math.min(depth, 4)}`);
-                    a.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        selectAndLoad(a.dataset.path);
-                    });
-                    li.appendChild(a);
-                    parent.appendChild(li);
                 }
             }
 
@@ -202,12 +179,11 @@
             });
         }
 
-        // Build and render trees
-        const treeCompact = toTree(NOTES.compact, 'compact');
-        const treeWide = toTree(NOTES.wide, 'wide');
-        renderTree(document.getElementById('tree-compact'), treeCompact, { isWide: false });
-        renderTree(document.getElementById('tree-wide'), treeWide, { isWide: true });
-        // Auto-open first-level folders
+        // Build and render tree
+        const treeNotes = toTree(NOTES);
+        renderTree(document.getElementById('tree-notes'), treeNotes);
+
+        // Auto-open first-level folders (blocks)
         document.querySelectorAll('#notes-explorer .tree > ul > details').forEach(d => d.open = true);
 
         // Filter binding
