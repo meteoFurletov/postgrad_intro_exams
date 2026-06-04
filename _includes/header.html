@@ -1,0 +1,52 @@
+{%- assign title_parts = site.title | split: " - " -%}
+<header class="site-header" role="banner">
+  <div class="site-header__inner">
+    <a class="site-brand" rel="author" href="{{ '/' | relative_url }}" aria-label="{{ site.title | escape }}">
+      <span class="site-brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+          <circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none" />
+          <ellipse cx="12" cy="12" rx="10" ry="4.3" />
+          <ellipse cx="12" cy="12" rx="10" ry="4.3" transform="rotate(60 12 12)" />
+          <ellipse cx="12" cy="12" rx="10" ry="4.3" transform="rotate(120 12 12)" />
+        </svg>
+      </span>
+      <span class="site-brand__title">
+        <b>{{ title_parts[0] | escape }}</b>{% if title_parts[1] %}<span>&nbsp;· {{ title_parts[1] | escape }}</span>{% endif %}
+      </span>
+    </a>
+
+    <span class="site-header__spacer"></span>
+
+    <nav class="site-header__nav" aria-label="Главная навигация">
+      <a class="header-link" href="{{ '/notes.html' | relative_url }}">Заметки</a>
+    </nav>
+
+    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Переключить тему" title="Переключить тему">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2" />
+        <path
+          d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<script>
+  (function () {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var root = document.documentElement;
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      var m = document.getElementById('theme-color-meta');
+      if (m) m.setAttribute('content', next === 'dark' ? '#15151b' : '#ffffff');
+      try { localStorage.setItem('theme', next); } catch (e) { }
+    });
+  })();
+</script>

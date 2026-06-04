@@ -2,7 +2,29 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" id="theme-color-meta" content="#ffffff">
+
+    {%- comment -%} Apply the saved/system theme before first paint (no flash) {%- endcomment -%}
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('theme');
+                if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', t);
+                var m = document.getElementById('theme-color-meta');
+                if (m) m.setAttribute('content', t === 'dark' ? '#15151b' : '#ffffff');
+            } catch (e) { }
+        })();
+    </script>
+
     {%- seo -%}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..500&display=swap">
+
     <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
     <link rel="stylesheet" href="{{ '/assets/notes.css' | relative_url }}">
     {%- feed_meta -%}

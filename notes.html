@@ -6,10 +6,11 @@ title: "Заметки"
 <h1>Просмотр заметок</h1>
 
 <!-- Mobile toggle button -->
-<button class="mobile-toggle" onclick="toggleMobileExplorer()">☰ Заметки</button>
+<button class="mobile-toggle" type="button" onclick="toggleMobileExplorer()" aria-controls="notes-explorer"
+    aria-expanded="false" aria-label="Открыть каталог заметок">☰ Заметки</button>
 
 <!-- Mobile overlay -->
-<div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileExplorer()"></div>
+<div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileExplorer()" aria-hidden="true"></div>
 
 <div class="notes-container">
     {% include notes-explorer.html %}
@@ -32,19 +33,21 @@ title: "Заметки"
     document.addEventListener('DOMContentLoaded', loadNoteFromHash);
 
     // Mobile explorer toggle functionality
+    function setToggleExpanded(expanded) {
+        const btn = document.querySelector('.mobile-toggle');
+        if (btn) btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    }
+
     function toggleMobileExplorer() {
         const explorer = document.querySelector('.notes-explorer');
         const overlay = document.getElementById('mobile-overlay');
-
-        console.log('Toggle called, explorer:', explorer, 'overlay:', overlay);
-
         if (explorer && overlay) {
             if (explorer.classList.contains('open')) {
                 closeMobileExplorer();
             } else {
                 explorer.classList.add('open');
                 overlay.classList.add('show');
-                console.log('Explorer opened');
+                setToggleExpanded(true);
             }
         }
     }
@@ -52,13 +55,10 @@ title: "Заметки"
     function closeMobileExplorer() {
         const explorer = document.querySelector('.notes-explorer');
         const overlay = document.getElementById('mobile-overlay');
-
-        console.log('Close called, explorer:', explorer, 'overlay:', overlay);
-
         if (explorer && overlay) {
             explorer.classList.remove('open');
             overlay.classList.remove('show');
-            console.log('Explorer closed');
+            setToggleExpanded(false);
         }
     }
 

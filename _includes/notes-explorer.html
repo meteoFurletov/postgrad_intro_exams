@@ -1,6 +1,6 @@
 <div id="notes-explorer" class="notes-explorer">
     <div class="notes-explorer-header">
-        <h3 style="margin:0;">Каталог</h3>
+        <h3>Каталог</h3>
         <input id="notes-filter" type="search" placeholder="Фильтр..." aria-label="Фильтр заметок" />
     </div>
 
@@ -22,22 +22,6 @@
         // Enumerate notes from static files
         const NOTES_PATHS = Array.from(document.querySelectorAll('#data-notes [data-path]')).map(el => el.getAttribute('data-path'));
         const NOTES = (NOTES_PATHS || []).sort().map(p => ({ path: p }));
-
-        // Sidebar toggle
-        const toggleBtn = document.querySelector('.notes-toggle');
-        const panel = document.getElementById('notes-explorer');
-        if (toggleBtn && panel) {
-            toggleBtn.addEventListener('click', () => {
-                const open = !panel.hasAttribute('hidden');
-                if (open) {
-                    panel.setAttribute('hidden', '');
-                    toggleBtn.setAttribute('aria-expanded', 'false');
-                } else {
-                    panel.removeAttribute('hidden');
-                    toggleBtn.setAttribute('aria-expanded', 'true');
-                }
-            });
-        }
 
         // Utilities
         function normalizePath(p) {
@@ -103,8 +87,7 @@
         function renderTree(container, tree) {
             container.innerHTML = '';
             const ul = document.createElement('ul');
-            ul.style.listStyle = 'none';
-            ul.style.paddingLeft = '0.5rem';
+            ul.className = 'tree-list';
 
             function renderNode(node, parent, depth = 0) {
                 // Files first (sorted with natural sorting for proper numerical order)
@@ -116,8 +99,7 @@
                     a.href = '#' + encodeURI(normalizePath(f.path));
                     a.dataset.path = normalizePath(f.path);
 
-                    // Make all files red (theme overview style)
-                    a.classList.add('vscode-file', 'theme-overview', `indent-${Math.min(depth, 4)}`);
+                    a.classList.add('vscode-file');
 
                     a.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -135,7 +117,7 @@
                     summary.textContent = name;
                     details.appendChild(summary);
                     const inner = document.createElement('div');
-                    inner.style.paddingLeft = '0.75rem';
+                    inner.className = 'tree-children';
                     details.appendChild(inner);
                     parent.appendChild(details);
 
@@ -166,17 +148,40 @@
             }
         }
 
-        // Filter (simple text filter on titles)
+        // Filter: match files by title and folders by name; hide folders with no
+        // visible descendants, and auto-expand folders that contain a match.
+        function filterContainer(container, ql) {
+            let anyVisible = false;
+            container.querySelectorAll(':scope > li').forEach(li => {
+                const a = li.querySelector('a[data-path]');
+                const match = !ql || (a && a.textContent.toLowerCase().includes(ql));
+                li.style.display = match ? '' : 'none';
+                if (match) anyVisible = true;
+            });
+            container.querySelectorAll(':scope > details').forEach(d => {
+                const summary = d.querySelector(':scope > summary');
+                const nameMatch = !ql || (summary && summary.textContent.toLowerCase().includes(ql));
+                const inner = d.querySelector(':scope > .tree-children');
+                const childVisible = inner ? filterContainer(inner, ql) : false;
+                const show = nameMatch || childVisible;
+                d.style.display = show ? '' : 'none';
+                if (childVisible) d.open = true;
+                if (show) anyVisible = true;
+            });
+            return anyVisible;
+        }
+
         function filterTrees(q) {
             const ql = (q || '').trim().toLowerCase();
-            const sections = document.querySelectorAll('#notes-explorer .notes-explorer-section');
-            sections.forEach(sec => {
-                // hide/show entire links that don't match
-                sec.querySelectorAll('a[data-path]').forEach(a => {
-                    const match = a.textContent.toLowerCase().includes(ql);
-                    a.parentElement.style.display = match ? '' : 'none';
-                });
-            });
+            const tree = document.querySelector('#notes-explorer .tree');
+            if (!tree) return;
+            tree.querySelectorAll(':scope > ul').forEach(ul => filterContainer(ul, ql));
+            if (!ql) {
+                // Restore default expansion: top-level folders open, the rest collapsed
+                tree.querySelectorAll('details').forEach(d => { d.style.display = ''; });
+                tree.querySelectorAll(':scope > ul > details .tree-children details').forEach(d => d.open = false);
+                tree.querySelectorAll(':scope > ul > details').forEach(d => d.open = true);
+            }
         }
 
         // Build and render tree
@@ -219,6 +224,29 @@
             });
         }
 
+        // Typeset math, waiting for the async MathJax bundle to finish loading first.
+        async function typesetMath(el) {
+            try {
+                if (window.__mjReady) await window.__mjReady;
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    await window.MathJax.typesetPromise([el]);
+                } else if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Queue) {
+                    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, el]);
+                }
+            } catch (e) { /* ignore typeset errors */ }
+        }
+
+        // Wrap wide tables so they scroll horizontally instead of breaking the layout.
+        function wrapTables(root) {
+            root.querySelectorAll('table').forEach(t => {
+                if (t.parentElement && t.parentElement.classList.contains('table-scroll')) return;
+                const wrap = document.createElement('div');
+                wrap.className = 'table-scroll';
+                t.replaceWith(wrap);
+                wrap.appendChild(t);
+            });
+        }
+
         window.loadNote = async function (path) {
             const viewer = getViewerEl();
             if (!viewer) return;
@@ -241,13 +269,8 @@
                         viewer.innerHTML = html;
                     }
                     rewriteRelativeResources(viewer, cand);
-                    if (window.MathJax) {
-                        if (window.MathJax.typesetPromise) {
-                            await window.MathJax.typesetPromise([viewer]);
-                        } else if (window.MathJax.Hub && window.MathJax.Hub.Queue) {
-                            window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, viewer]);
-                        }
-                    }
+                    wrapTables(viewer);
+                    await typesetMath(viewer);
                     window.scrollTo(0, 0);
                     loaded = true;
                     break;
@@ -263,8 +286,14 @@
         function selectAndLoad(p) {
             const path = normalizePath(p);
             setActive(path);
-            window.location.hash = '#' + encodeURI(path);
-            if (window.loadNote) window.loadNote(path);
+            const newHash = '#' + encodeURI(path);
+            if (location.hash === newHash) {
+                // Same hash → no hashchange will fire, so load directly (re-click).
+                if (window.loadNote) window.loadNote(path);
+            } else {
+                // Changing the hash triggers loadNoteFromHash, which loads the note once.
+                window.location.hash = newHash;
+            }
         }
 
         // Initialize after DOM is ready so the viewer exists
