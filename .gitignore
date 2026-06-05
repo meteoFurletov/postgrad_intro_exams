@@ -1,28 +1,20 @@
-# Jekyll build artifacts
+# Quartz build artifacts
+node_modules/
+public/
+.quartz-cache/
+tsconfig.tsbuildinfo
+
+# OS / editor
+.DS_Store
+private/
+
+# Local-only artifacts (not part of the site)
+__pycache__/
+pdf_output/
+remarkable_pdf.py
+vendor/
+.bundle/
 _site/
 .sass-cache/
 .jekyll-cache/
-.jekyll-metadata
-
-# Ruby bundle
-.bundle/
-vendor/
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Editor files
-.vscode/
-*.swp
-*.swo
-*~
-
-# Logs
-*.log
-__pycache__/
+*.gem

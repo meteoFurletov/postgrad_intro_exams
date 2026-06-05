@@ -1,20 +1,18 @@
-# Постдипломное образование по физике атмосферы
+# Quartz v4
 
-Добро пожаловать в документацию по курсу физики атмосферы для постдипломного образования.
+> “[One] who works with the door open gets all kinds of interruptions, but [they] also occasionally gets clues as to what the world is and what might be important.” — Richard Hamming
 
-{% include physics-nav.html %}
+Quartz is a set of tools that helps you publish your [digital garden](https://jzhao.xyz/posts/networked-thought) and notes as a website for free.
+Quartz v4 features a from-the-ground rewrite focusing on end-user extensibility and ease-of-use.
 
-## О курсе
+🔗 Read the documentation and get started: https://quartz.jzhao.xyz/
 
-Данный курс представляет собой комплексное изучение физических процессов в атмосфере Земли, включающее теоретические основы и практические применения в метеорологии и климатологии.
+[Join the Discord Community](https://discord.gg/cRFFHYye7t)
 
-Каждая тема содержит подробное изложение материала с математическими формулами и физическими законами, представленными в удобном для изучения формате.
+## Sponsors
 
-## Навигация
-
-Используйте навигацию выше для быстрого перехода к конкретным темам. На каждой странице также доступна навигация между предыдущей и следующей темами.
-
----
-
-*Автор: Никита Фурлетов*  
-*Контакт: [meteofurletov@gmail.com](mailto:meteofurletov@gmail.com)*
+<p align="center">
+  <a href="https://github.com/sponsors/jackyzha0">
+    <img src="https://cdn.jsdelivr.net/gh/jackyzha0/jackyzha0/sponsorkit/sponsors.svg" />
+  </a>
+</p>
