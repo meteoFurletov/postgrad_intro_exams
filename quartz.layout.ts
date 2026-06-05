@@ -1,5 +1,26 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import type { FileTrieNode } from "./quartz/util/fileTrie"
+
+// Explorer sort: top-level blocks (Блок 0..3) descending so Блок 3 is first;
+// everything else keeps natural ascending order (folders first, then 01, 02 …).
+// NOTE: this fn is serialized to the client, so it must stay self-contained.
+const explorerSort = (a: FileTrieNode, b: FileTrieNode) => {
+  const blockNum = (name: string) => {
+    const m = /^Блок\s+(\d+)/.exec(name)
+    return m ? parseInt(m[1], 10) : null
+  }
+  const an = blockNum(a.displayName)
+  const bn = blockNum(b.displayName)
+  if (an !== null && bn !== null) return bn - an
+  if ((!a.isFolder && !b.isFolder) || (a.isFolder && b.isFolder)) {
+    return a.displayName.localeCompare(b.displayName, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    })
+  }
+  return !a.isFolder && b.isFolder ? 1 : -1
+}
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
@@ -38,7 +59,7 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({ sortFn: explorerSort }),
   ],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
@@ -61,7 +82,7 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({ sortFn: explorerSort }),
   ],
   right: [],
 }
