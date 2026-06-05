@@ -279,9 +279,16 @@
 }
 
 @media (max-width: 900px) {
+    /* minmax(0,1fr) + min-width:0 so a wide child (display equation, table)
+       can't stretch the note pane past the viewport and cause sideways scroll. */
     .notes-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 0;
+    }
+
+    .reader,
+    .note-viewer {
+        min-width: 0;
     }
 
     /* Floating button to open the catalog */
@@ -419,6 +426,14 @@
 
 .note-placeholder {
     color: var(--text-label);
+}
+
+/* The reading pane is focusable so keyboard users can scroll it, but it's a
+   scroll region — not a control — so suppress the focus ring that would
+   otherwise box the entire pane. */
+.reader:focus,
+.reader:focus-visible {
+    outline: none;
 }
 
 /* Reading-progress bar — shown only in the desktop app-shell where the
