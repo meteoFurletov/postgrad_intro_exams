@@ -3,7 +3,7 @@
 
 {%- include head.html -%}
 
-<body>
+<body{% if page.title == 'Заметки' %} class="is-notes-app"{% endif %}>
 
   {%- include header.html -%}
 

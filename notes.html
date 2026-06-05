@@ -3,7 +3,7 @@ layout: default
 title: "Заметки"
 ---
 
-<h1>Просмотр заметок</h1>
+<h1 class="sr-only">Просмотр заметок</h1>
 
 <!-- Mobile toggle button -->
 <button class="mobile-toggle" type="button" onclick="toggleMobileExplorer()" aria-controls="notes-explorer"
@@ -15,9 +15,24 @@ title: "Заметки"
 <div class="notes-container">
     {% include notes-explorer.html %}
 
-    <div id="note-viewer" class="note-viewer">
-        <p>Выберите заметку в панели слева.</p>
-    </div>
+    <!-- Reading pane: the only region that scrolls in app-shell mode.
+         tabindex/role make it keyboard-focusable so PageUp/Down/Space/arrows
+         can scroll it (the app-shell removes the document scroll). -->
+    <section class="reader" id="reader" tabindex="0" role="region" aria-label="Текст заметки">
+        <div class="reading-progress" aria-hidden="true">
+            <span class="reading-progress__bar" id="reading-bar"></span>
+        </div>
+        <article id="note-viewer" class="note-viewer">
+            <p class="note-placeholder">Выберите заметку в панели слева.</p>
+        </article>
+        <nav class="note-pager" id="note-pager" aria-label="Соседние заметки" hidden></nav>
+    </section>
+
+    <!-- Auto-generated outline of the current note (hidden when it has no sections) -->
+    <aside class="note-outline" id="note-outline" aria-label="Содержание заметки">
+        <div class="note-outline__title">На этой странице</div>
+        <nav class="note-outline__list" id="note-outline-list"></nav>
+    </aside>
 </div>
 
 <!-- Markdown renderer -->
@@ -48,6 +63,12 @@ title: "Заметки"
                 explorer.classList.add('open');
                 overlay.classList.add('show');
                 setToggleExpanded(true);
+                // Announce as a modal drawer and move focus inside it.
+                explorer.setAttribute('role', 'dialog');
+                explorer.setAttribute('aria-modal', 'true');
+                explorer.setAttribute('aria-label', 'Каталог заметок');
+                const filter = document.getElementById('notes-filter');
+                if (filter) filter.focus();
             }
         }
     }
@@ -56,9 +77,17 @@ title: "Заметки"
         const explorer = document.querySelector('.notes-explorer');
         const overlay = document.getElementById('mobile-overlay');
         if (explorer && overlay) {
+            const wasOpen = explorer.classList.contains('open');
             explorer.classList.remove('open');
             overlay.classList.remove('show');
             setToggleExpanded(false);
+            explorer.removeAttribute('role');
+            explorer.removeAttribute('aria-modal');
+            // Return focus to the trigger so keyboard/SR users aren't stranded.
+            if (wasOpen) {
+                const btn = document.querySelector('.mobile-toggle');
+                if (btn) btn.focus();
+            }
         }
     }
 
