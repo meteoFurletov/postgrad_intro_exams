@@ -83,7 +83,8 @@
     width: 100%;
     padding: 8px 10px 8px 32px;
     font: inherit;
-    font-size: 0.875rem;
+    /* 16px stops mobile browsers from auto-zooming the page on focus */
+    font-size: 16px;
     color: var(--text);
     background-color: var(--bg-inset);
     background-image: var(--icon-search);
@@ -432,7 +433,9 @@
    scroll region — not a control — so suppress the focus ring that would
    otherwise box the entire pane. */
 .reader:focus,
-.reader:focus-visible {
+.reader:focus-visible,
+.notes-explorer:focus,
+.notes-explorer:focus-visible {
     outline: none;
 }
 

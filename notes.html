@@ -67,8 +67,10 @@ title: "Заметки"
                 explorer.setAttribute('role', 'dialog');
                 explorer.setAttribute('aria-modal', 'true');
                 explorer.setAttribute('aria-label', 'Каталог заметок');
-                const filter = document.getElementById('notes-filter');
-                if (filter) filter.focus();
+                // Focus the drawer itself (not the search field) so the keyboard
+                // doesn't pop up and the page doesn't zoom when opening the catalog.
+                explorer.setAttribute('tabindex', '-1');
+                explorer.focus({ preventScroll: true });
             }
         }
     }
